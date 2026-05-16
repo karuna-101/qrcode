@@ -7,8 +7,8 @@
             content="width=device-width, initial-scale=1.0, user-scalable=yes"
         />
         <title>QR Unik Personal - Garis & Bentuk</title>
-        <!-- Library QR Code Generator (diperlukan) -->
-        <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/dist/qrcode.min.js"></script>
+        <!-- Library QR Code Generator -->
+        <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.0/build/qrcode.min.js"></script>
         <style>
             * {
                 margin: 0;
@@ -104,6 +104,10 @@
                 height: 42px;
                 padding: 0.2rem;
                 cursor: pointer;
+            }
+            input[type="range"] {
+                padding: 0;
+                height: auto;
             }
             .checkbox {
                 display: flex;
@@ -278,7 +282,7 @@ Halo, ini QR kreasiku!</textarea
         <script>
             (function () {
                 // Cek apakah library QR sudah termuat
-                if (typeof qrcode === "undefined") {
+                if (typeof QRCode === "undefined") {
                     alert(
                         "Library QR tidak termuat. Periksa koneksi internet & muat ulang halaman.",
                     );
@@ -303,7 +307,7 @@ Halo, ini QR kreasiku!</textarea
                 const ctx = canvas.getContext("2d");
                 const infoNote = document.getElementById("infoNote");
 
-                let currentQR = null; // objek qr dari library
+                let currentQRData = null; // data QR untuk diunduh
 
                 // Update label skala
                 scaleSlider.addEventListener("input", () => {
@@ -429,12 +433,33 @@ Halo, ini QR kreasiku!</textarea
 
                     try {
                         const errorLevel = errorLevelSelect.value;
-                        const qr = qrcode(0, errorLevel); // tipe otomatis
-                        qr.addData(text);
-                        qr.make();
-                        currentQR = qr;
+                        const qr = new QRCode({
+                            text: text,
+                            width: 256,
+                            height: 256,
+                            correctLevel: QRCode.CorrectLevel[errorLevel],
+                            useSVG: false
+                        });
 
-                        const moduleCount = qr.getModuleCount();
+                        // Dapatkan data QR dari canvas bawaan library
+                        const qrCanvas = qr.canvas;
+                        const qrCtx = qrCanvas.getContext("2d");
+                        const imgData = qrCtx.getImageData(0, 0, 256, 256);
+                        const data = imgData.data;
+
+                        // Ekstrak modul QR dari pixel data
+                        const modules = [];
+                        for (let i = 0; i < 256; i++) {
+                            modules[i] = [];
+                            for (let j = 0; j < 256; j++) {
+                                const idx = (i * 256 + j) * 4;
+                                // Jika pixel gelap (R+G+B < 384), berarti modul aktif
+                                const isDark = (data[idx] + data[idx+1] + data[idx+2]) < 384;
+                                modules[i][j] = isDark;
+                            }
+                        }
+
+                        const moduleCount = 256; // QR size 256x256
                         const scale = parseInt(scaleSlider.value, 10);
                         const canvasSize = moduleCount * scale;
                         canvas.width = canvasSize;
@@ -449,7 +474,7 @@ Halo, ini QR kreasiku!</textarea
 
                         for (let row = 0; row < moduleCount; row++) {
                             for (let col = 0; col < moduleCount; col++) {
-                                if (!qr.isDark(row, col)) continue;
+                                if (!modules[row][col]) continue;
 
                                 const x = col * scale;
                                 const y = row * scale;
@@ -485,6 +510,7 @@ Halo, ini QR kreasiku!</textarea
                         infoNote.textContent = `QR ${moduleCount}x${moduleCount} · Error ${errorLevel} · Gaya: ${styleSelect.value}`;
                         if (!preserve)
                             infoNote.textContent += " (non-standar, tes scan)";
+                        currentQRData = { qr, modules, moduleCount };
                     } catch (err) {
                         alert("Gagal membuat QR: " + err.message);
                         console.error(err);
@@ -493,7 +519,7 @@ Halo, ini QR kreasiku!</textarea
 
                 // Unduh PNG
                 function downloadQR() {
-                    if (!currentQR) {
+                    if (!currentQRData) {
                         alert("Generate QR terlebih dahulu.");
                         return;
                     }
@@ -516,7 +542,7 @@ Halo, ini QR kreasiku!</textarea
                 // Generate otomatis saat halaman siap
                 window.addEventListener("load", () => {
                     // Cek ulang library
-                    if (typeof qrcode !== "undefined") {
+                    if (typeof QRCode !== "undefined") {
                         generateQR();
                     } else {
                         infoNote.textContent =
