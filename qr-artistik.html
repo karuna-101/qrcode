@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=yes"
+        />
+        <title>QR Code Artistik - Bentuk Khusus</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                font-family: "Inter", system-ui, sans-serif;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 1.5rem;
+            }
+
+            .container {
+                background: white;
+                border-radius: 2rem;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+                padding: 1.5rem;
+                max-width: 1400px;
+                width: 100%;
+                height: calc(100vh - 3rem);
+                max-height: 90vh;
+            }
+
+            .panel {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .left-panel {
+                border-right: 2px solid #f0f0f0;
+                padding-right: 1.5rem;
+                overflow-y: auto;
+                max-height: calc(100vh - 6rem);
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                color: #1a1a1a;
+                margin-bottom: 0.3rem;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .subtitle {
+                color: #666;
+                font-size: 0.8rem;
+                margin-bottom: 1rem;
+                border-left: 4px solid #667eea;
+                padding-left: 0.8rem;
+            }
+
+            label {
+                font-weight: 700;
+                color: #1a1a1a;
+                font-size: 0.85rem;
+                display: block;
+                margin-bottom: 0.3rem;
+            }
+
+            input[type="text"],
+            input[type="url"],
+            textarea,
+            select {
+                width: 100%;
+                padding: 0.6rem 0.8rem;
+                border: 2px solid #e0e0e0;
+                border-radius: 0.6rem;
+                font-family: inherit;
+                font-size: 0.85rem;
+                background: #fafafa;
+                transition: all 0.3s;
+            }
+
+            input[type="text"]:focus,
+            input[type="url"]:focus,
+            textarea:focus,
+            select:focus {
+                outline: none;
+                border-color: #667eea;
+                background: white;
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+            .input-group {
+                display: flex;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .input-group > div {
+                flex: 1;
+                min-width: 150px;
+            }
+
+            .style-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+
+            .style-option {
+                padding: 0.8rem;
+                border: 2px solid #e0e0e0;
+                border-radius: 0.6rem;
+                cursor: pointer;
+                transition: all 0.3s;
+                background: white;
+                text-align: center;
+            }
+
+            .style-option:hover {
+                border-color: #667eea;
+                background: #f8f9ff;
+            }
+
+            .style-option input[type="radio"] {
+                display: none;
+            }
+
+            .style-option input[type="radio"]:checked + label {
+                color: #667eea;
+                font-weight: 800;
+            }
+
+            .style-option label {
+                margin: 0;
+                cursor: pointer;
+                font-size: 0.8rem;
+            }
+
+            .style-preview {
+                width: 40px;
+                height: 40px;
+                margin: 0.3rem auto;
+                border-radius: 0.4rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.9rem;
+                background: #f0f0f0;
+            }
+
+            .button-group {
+                display: flex;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+            button {
+                flex: 1;
+                min-width: 120px;
+                padding: 0.7rem 1.2rem;
+                border: none;
+                border-radius: 0.8rem;
+                font-weight: 700;
+                font-size: 0.85rem;
+                cursor: pointer;
+                transition: all 0.3s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.4rem;
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+            }
+
+            .btn-tertiary {
+                background: #f0f0f0;
+                color: #333;
+                border: 1px solid #ddd;
+            }
+
+            .btn-tertiary:hover {
+                background: #e0e0e0;
+            }
+
+            .divider {
+                height: 1px;
+                background: #e0e0e0;
+                margin: 1rem 0;
+            }
+
+            .right-panel {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 0;
+            }
+
+            .preview-box {
+                background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+                border: 2px dashed #667eea;
+                border-radius: 1rem;
+                padding: 1rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+                position: relative;
+                min-height: 300px;
+            }
+
+            .canvas-wrapper {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: white;
+                border-radius: 0.8rem;
+                padding: 0.5rem;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+                width: 100%;
+                height: 100%;
+                max-width: 400px;
+                max-height: 400px;
+                overflow: auto;
+            }
+
+            canvas {
+                display: block;
+                max-width: 100%;
+                max-height: 100%;
+                height: auto;
+                width: auto;
+                image-rendering: crisp-edges;
+            }
+
+            #qrCanvas {
+                max-width: 100%;
+                max-height: 100%;
+            }
+
+            .preview-info {
+                margin-top: 0.8rem;
+                text-align: center;
+                font-size: 0.75rem;
+                color: #666;
+            }
+
+            .info-badge {
+                display: inline-block;
+                background: #f0f0f0;
+                padding: 0.35rem 0.8rem;
+                border-radius: 2rem;
+                margin: 0.2rem;
+                font-size: 0.7rem;
+                color: #333;
+            }
+
+            .success-message,
+            .error-message {
+                padding: 0.8rem;
+                border-radius: 0.6rem;
+                margin-bottom: 0.8rem;
+                display: none;
+                font-size: 0.8rem;
+            }
+
+            .success-message {
+                background: #d4edda;
+                border: 1px solid #c3e6cb;
+                color: #155724;
+            }
+
+            .error-message {
+                background: #f8d7da;
+                border: 1px solid #f5c6cb;
+                color: #721c24;
+            }
+
+            @media (max-width: 1024px) {
+                .container {
+                    grid-template-columns: 1fr;
+                    gap: 1rem;
+                    height: auto;
+                    max-height: none;
+                }
+
+                .left-panel {
+                    border-right: none;
+                    border-bottom: 2px solid #f0f0f0;
+                    padding-right: 0;
+                    padding-bottom: 1.5rem;
+                    max-height: none;
+                }
+
+                .right-panel {
+                    min-height: 350px;
+                }
+
+                .preview-box {
+                    min-height: 350px;
+                }
+
+                .canvas-wrapper {
+                    max-width: 320px;
+                    max-height: 320px;
+                }
+
+                .style-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+
+            @media (max-width: 600px) {
+                h1 {
+                    font-size: 1.2rem;
+                }
+
+                .container {
+                    padding: 1rem;
+                    gap: 1rem;
+                }
+
+                button {
+                    min-width: 100px;
+                    padding: 0.6rem 1rem;
+                    font-size: 0.8rem;
+                }
+
+                .preview-box {
+                    min-height: 280px;
+                }
+
+                .canvas-wrapper {
+                    max-width: 260px;
+                    max-height: 260px;
+                }
+
+                .left-panel {
+                    max-height: none;
+                }
+
+                .right-panel {
+                    min-height: 300px;
+                }
+
+                .style-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <!-- Left Panel: Controls -->
+            <div class="panel left-panel">
+                <h1>✨ QR Artistik</h1>
+                <div class="subtitle">
+                    QR Code dengan bentuk khusus & unik
+                </div>
+
+                <div class="success-message" id="successMsg"></div>
+                <div class="error-message" id="errorMsg"></div>
+
+                <!-- Web Link Input -->
+                <div>
+                    <label>🌐 URL / Teks</label>
+                    <input
+                        type="url"
+                        id="webLink"
+                        placeholder="https://example.com"
+                        value="https://example.com"
+                    />
+                </div>
+
+                <!-- Shape Selection -->
+                <div>
+                    <label>🎨 Pilih Bentuk Module</label>
+                    <div class="style-grid">
+                        <div class="style-option">
+                            <input type="radio" id="shape-square" name="shape" value="square" checked />
+                            <label for="shape-square">
+                                <div class="style-preview">⬜</div>
+                                Kotak
+                            </label>
+                        </div>
+
+                        <div class="style-option">
+                            <input type="radio" id="shape-circle" name="shape" value="circle" />
+                            <label for="shape-circle">
+                                <div class="style-preview">⭕</div>
+                                Lingkaran
+                            </label>
+                        </div>
+
+                        <div class="style-option">
+                            <input type="radio" id="shape-triangle" name="shape" value="triangle" />
+                            <label for="shape-triangle">
+                                <div class="style-preview">🔺</div>
+                                Segitiga
+                            </label>
+                        </div>
+
+                        <div class="style-option">
+                            <input type="radio" id="shape-diamond" name="shape" value="diamond" />
+                            <label for="shape-diamond">
+                                <div class="style-preview">💎</div>
+                                Berlian
+                            </label>
+                        </div>
+
+                        <div class="style-option">
+                            <input type="radio" id="shape-star" name="shape" value="star" />
+                            <label for="shape-star">
+                                <div class="style-preview">⭐</div>
+                                Bintang
+                            </label>
+                        </div>
+
+                        <div class="style-option">
+                            <input type="radio" id="shape-heart" name="shape" value="heart" />
+                            <label for="shape-heart">
+                                <div class="style-preview">❤️</div>
+                                Hati
+                            </label>
+                        </div>
+
+                        <div class="style-option">
+                            <input type="radio" id="shape-hexagon" name="shape" value="hexagon" />
+                            <label for="shape-hexagon">
+                                <div class="style-preview">⬡</div>
+                                Hexagon
+                            </label>
+                        </div>
+
+                        <div class="style-option">
+                            <input type="radio" id="shape-rune" name="shape" value="rune" />
+                            <label for="shape-rune">
+                                <div class="style-preview">ᚱ</div>
+                                Rune
+                            </label>
+                        </div>
+
+                        <div class="style-option">
+                            <input type="radio" id="shape-mystical" name="shape" value="mystical" />
+                            <label for="shape-mystical">
+                                <div class="style-preview">✦</div>
+                                Mistis
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Color Settings -->
+                <div class="input-group">
+                    <div>
+                        <label>🎨 Warna Shape</label>
+                        <input type="color" id="shapeColor" value="#667eea" />
+                    </div>
+                    <div>
+                        <label>🖼️ Warna Background</label>
+                        <input type="color" id="bgColor" value="#ffffff" />
+                    </div>
+                </div>
+
+                <!-- Size Settings -->
+                <div class="input-group">
+                    <div>
+                        <label>📏 Ukuran Module</label>
+                        <select id="moduleSize">
+                            <option value="6">6px (Kecil)</option>
+                            <option value="8" selected>8px (Normal)</option>
+                            <option value="10">10px (Besar)</option>
+                            <option value="12">12px (Jumbo)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>🔄 Fill Style</label>
+                        <select id="fillStyle">
+                            <option value="solid" selected>Solid (Penuh)</option>
+                            <option value="outline">Outline (Garis)</option>
+                            <option value="gradient">Gradient</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Action Buttons -->
+                <div class="button-group">
+                    <button class="btn-primary" id="generateBtn">
+                        <span>✨</span> Generate
+                    </button>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-tertiary" id="downloadPngBtn">
+                        <span>🖼️</span> PNG
+                    </button>
+                    <button class="btn-tertiary" id="printBtn">
+                        <span>🖨️</span> Cetak
+                    </button>
+                </div>
+
+                <div style="margin-top: 0.8rem; padding: 0.8rem; background: #f8f9fa; border-radius: 0.6rem; font-size: 0.7rem; color: #666; border-left: 4px solid #667eea; line-height: 1.4;">
+                    <strong style="font-size: 0.75rem;">💡 Tips:</strong><br>
+                    • Setiap bentuk tetap scannable<br>
+                    • Outline untuk efek artistic<br>
+                    • Gradient untuk 3D look<br>
+                    • Error Level H built-in
+                </div>
+            </div>
+
+            <!-- Right Panel: Preview -->
+            <div class="panel right-panel">
+                <div class="preview-box">
+                    <div class="canvas-wrapper">
+                        <canvas id="qrCanvas"></canvas>
+                    </div>
+                </div>
+                <div class="preview-info" id="previewInfo">
+                    Pilih bentuk dan klik Generate
+                </div>
+            </div>
+        </div>
+
+        <script>
+            (function () {
+                // DOM Elements
+                const webLinkInput = document.getElementById("webLink");
+                const shapeRadios = document.querySelectorAll('input[name="shape"]');
+                const moduleSizeSelect = document.getElementById("moduleSize");
+                const fillStyleSelect = document.getElementById("fillStyle");
+                const shapeColorInput = document.getElementById("shapeColor");
+                const bgColorInput = document.getElementById("bgColor");
+                const generateBtn = document.getElementById("generateBtn");
+                const downloadPngBtn = document.getElementById("downloadPngBtn");
+                const printBtn = document.getElementById("printBtn");
+                const canvas = document.getElementById("qrCanvas");
+                const ctx = canvas.getContext("2d");
+                const previewInfo = document.getElementById("previewInfo");
+                const successMsg = document.getElementById("successMsg");
+                const errorMsg = document.getElementById("errorMsg");
+
+                let currentQRMatrix = null;
+                let currentQRData = null;
+
+                // Show message
+                function showMessage(type, message) {
+                    const msgEl = type === "success" ? successMsg : errorMsg;
+                    msgEl.textContent = message;
+                    msgEl.style.display = "block";
+                    setTimeout(() => {
+                        msgEl.style.display = "none";
+                    }, 3000);
+                }
+
+                // Get current shape
+                function getSelectedShape() {
+                    return document.querySelector('input[name="shape"]:checked').value;
+                }
+
+                // Draw different shapes
+                function drawShape(x, y, size, shape, color, fillStyle) {
+                    const centerX = x + size / 2;
+                    const centerY = y + size / 2;
+                    const radius = size / 2.5;
+
+                    ctx.fillStyle = color;
+                    ctx.strokeStyle = color;
+
+                    switch (shape) {
+                        case "circle":
+                            ctx.beginPath();
+                            ctx.arc(centerX, centerY, radius * 0.8, 0, 2 * Math.PI);
+                            if (fillStyle === "solid") ctx.fill();
+                            else if (fillStyle === "outline") {
+                                ctx.lineWidth = size * 0.2;
+                                ctx.stroke();
+                            } else {
+                                const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+                                gradient.addColorStop(0, color);
+                                gradient.addColorStop(1, color + "40");
+                                ctx.fillStyle = gradient;
+                                ctx.fill();
+                            }
+                            break;
+
+                        case "triangle":
+                            ctx.beginPath();
+                            ctx.moveTo(centerX, y + size * 0.1);
+                            ctx.lineTo(x + size * 0.9, y + size * 0.9);
+                            ctx.lineTo(x + size * 0.1, y + size * 0.9);
+                            ctx.closePath();
+                            if (fillStyle === "solid") ctx.fill();
+                            else if (fillStyle === "outline") {
+                                ctx.lineWidth = size * 0.15;
+                                ctx.stroke();
+                            } else {
+                                ctx.fill();
+                                ctx.strokeStyle = color + "80";
+                                ctx.lineWidth = size * 0.1;
+                                ctx.stroke();
+                            }
+                            break;
+
+                        case "diamond":
+                            ctx.beginPath();
+                            ctx.moveTo(centerX, y + size * 0.1);
+                            ctx.lineTo(x + size * 0.9, centerY);
+                            ctx.lineTo(centerX, y + size * 0.9);
+                            ctx.lineTo(x + size * 0.1, centerY);
+                            ctx.closePath();
+                            if (fillStyle === "solid") ctx.fill();
+                            else if (fillStyle === "outline") {
+                                ctx.lineWidth = size * 0.15;
+                                ctx.stroke();
+                            } else {
+                                ctx.fill();
+                            }
+                            break;
+
+                        case "star":
+                            ctx.beginPath();
+                            for (let i = 0; i < 5; i++) {
+                                const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+                                const xPos = centerX + radius * Math.cos(angle);
+                                const yPos = centerY + radius * Math.sin(angle);
+                                if (i === 0) ctx.moveTo(xPos, yPos);
+                                else ctx.lineTo(xPos, yPos);
+                            }
+                            ctx.closePath();
+                            if (fillStyle === "solid") ctx.fill();
+                            else if (fillStyle === "outline") {
+                                ctx.lineWidth = size * 0.15;
+                                ctx.stroke();
+                            } else {
+                                ctx.fill();
+                            }
+                            break;
+
+                        case "heart":
+                            ctx.beginPath();
+                            ctx.moveTo(centerX, y + size * 0.6);
+                            ctx.quadraticCurveTo(x + size * 0.2, y + size * 0.2, x + size * 0.4, y + size * 0.2);
+                            ctx.quadraticCurveTo(centerX, y - size * 0.1, centerX, y + size * 0.4);
+                            ctx.quadraticCurveTo(centerX, y - size * 0.1, x + size * 0.6, y + size * 0.2);
+                            ctx.quadraticCurveTo(x + size * 0.8, y + size * 0.2, centerX, y + size * 0.6);
+                            if (fillStyle === "solid") ctx.fill();
+                            else if (fillStyle === "outline") {
+                                ctx.lineWidth = size * 0.15;
+                                ctx.stroke();
+                            } else {
+                                ctx.fill();
+                            }
+                            break;
+
+                        case "hexagon":
+                            ctx.beginPath();
+                            for (let i = 0; i < 6; i++) {
+                                const angle = (i * Math.PI) / 3;
+                                const xPos = centerX + radius * Math.cos(angle);
+                                const yPos = centerY + radius * Math.sin(angle);
+                                if (i === 0) ctx.moveTo(xPos, yPos);
+                                else ctx.lineTo(xPos, yPos);
+                            }
+                            ctx.closePath();
+                            if (fillStyle === "solid") ctx.fill();
+                            else if (fillStyle === "outline") {
+                                ctx.lineWidth = size * 0.15;
+                                ctx.stroke();
+                            } else {
+                                ctx.fill();
+                            }
+                            break;
+
+                        case "rune":
+                            // Draw Elder Futhark Rune style (ᚱ = Raido)
+                            ctx.font = `bold ${size * 0.7}px Arial`;
+                            ctx.textAlign = "center";
+                            ctx.textBaseline = "middle";
+                            ctx.fillText("ᚱ", centerX, centerY);
+                            break;
+
+                        case "mystical":
+                            // Draw mystical cross/star pattern
+                            ctx.lineWidth = size * 0.15;
+                            ctx.beginPath();
+                            ctx.moveTo(x + size * 0.3, centerY);
+                            ctx.lineTo(x + size * 0.7, centerY);
+                            ctx.stroke();
+                            ctx.beginPath();
+                            ctx.moveTo(centerX, y + size * 0.3);
+                            ctx.lineTo(centerX, y + size * 0.7);
+                            ctx.stroke();
+                            ctx.beginPath();
+                            ctx.moveTo(x + size * 0.35, y + size * 0.35);
+                            ctx.lineTo(x + size * 0.65, y + size * 0.65);
+                            ctx.stroke();
+                            ctx.beginPath();
+                            ctx.moveTo(x + size * 0.65, y + size * 0.35);
+                            ctx.lineTo(x + size * 0.35, y + size * 0.65);
+                            ctx.stroke();
+                            break;
+
+                        case "square":
+                        default:
+                            if (fillStyle === "solid") {
+                                ctx.fillRect(x + size * 0.1, y + size * 0.1, size * 0.8, size * 0.8);
+                            } else if (fillStyle === "outline") {
+                                ctx.lineWidth = size * 0.15;
+                                ctx.strokeRect(x + size * 0.1, y + size * 0.1, size * 0.8, size * 0.8);
+                            } else {
+                                ctx.fillRect(x + size * 0.1, y + size * 0.1, size * 0.8, size * 0.8);
+                                ctx.strokeStyle = color + "40";
+                                ctx.lineWidth = size * 0.1;
+                                ctx.strokeRect(x + size * 0.05, y + size * 0.05, size * 0.9, size * 0.9);
+                            }
+                            break;
+                    }
+                }
+
+                // Generate QR Code
+                function generateQR() {
+                    const webLink = webLinkInput.value.trim();
+                    if (!webLink) {
+                        showMessage("error", "URL tidak boleh kosong");
+                        return;
+                    }
+
+                    try {
+                        const shape = getSelectedShape();
+                        const moduleSize = parseInt(moduleSizeSelect.value);
+                        const fillStyle = fillStyleSelect.value;
+                        const shapeColor = shapeColorInput.value;
+                        const bgColor = bgColorInput.value;
+
+                        // Create standard QR first to get matrix
+                        const tempContainer = document.createElement("div");
+                        tempContainer.style.display = "none";
+                        document.body.appendChild(tempContainer);
+
+                        const qr = new QRCode(tempContainer, {
+                            text: webLink,
+                            width: 200,
+                            height: 200,
+                            colorDark: "#000000",
+                            colorLight: "#ffffff",
+                            correctLevel: QRCode.CorrectLevel.H
+                        });
+
+                        // Extract QR matrix from canvas
+                        const qrCanvas = tempContainer.querySelector("canvas");
+                        const qrCtx = qrCanvas.getContext("2d");
+                        const imgData = qrCtx.getImageData(0, 0, 200, 200);
+                        const data = imgData.data;
+
+                        const qrSize = 200;
+                        const matrix = [];
+                        for (let i = 0; i < qrSize; i++) {
+                            matrix[i] = [];
+                            for (let j = 0; j < qrSize; j++) {
+                                const idx = (i * qrSize + j) * 4;
+                                const isDark = (data[idx] + data[idx + 1] + data[idx + 2]) < 384;
+                                matrix[i][j] = isDark;
+                            }
+                        }
+
+                        // Draw custom QR on main canvas
+                        const canvasSize = moduleSize * qrSize;
+                        canvas.width = canvasSize;
+                        canvas.height = canvasSize;
+
+                        // Background
+                        ctx.fillStyle = bgColor;
+                        ctx.fillRect(0, 0, canvasSize, canvasSize);
+
+                        // Draw shapes
+                        for (let row = 0; row < qrSize; row++) {
+                            for (let col = 0; col < qrSize; col++) {
+                                if (matrix[row][col]) {
+                                    const x = col * moduleSize;
+                                    const y = row * moduleSize;
+                                    drawShape(x, y, moduleSize, shape, shapeColor, fillStyle);
+                                }
+                            }
+                        }
+
+                        currentQRMatrix = matrix;
+                        currentQRData = {
+                            text: webLink,
+                            shape: shape,
+                            moduleSize: moduleSize,
+                            fillStyle: fillStyle,
+                            shapeColor: shapeColor,
+                            bgColor: bgColor
+                        };
+
+                        previewInfo.innerHTML = `
+                            <div>
+                                <span class="info-badge">Shape: ${shape}</span>
+                                <span class="info-badge">Size: ${moduleSize}px</span>
+                                <span class="info-badge">Style: ${fillStyle}</span>
+                            </div>
+                            <div style="margin-top: 0.5rem; font-size: 0.75rem">
+                                ✅ QR Code artistik siap!
+                            </div>
+                        `;
+
+                        showMessage("success", "QR Code berhasil dibuat!");
+                        document.body.removeChild(tempContainer);
+                    } catch (err) {
+                        showMessage("error", "Error: " + err.message);
+                        console.error(err);
+                    }
+                }
+
+                // Download PNG
+                function downloadPNG() {
+                    if (!currentQRData) {
+                        showMessage("error", "Generate QR Code terlebih dahulu");
+                        return;
+                    }
+
+                    canvas.toBlob((blob) => {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = `qr-artistik-${currentQRData.shape}-${new Date().getTime()}.png`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        showMessage("success", "QR Code berhasil diunduh!");
+                    }, "image/png");
+                }
+
+                // Print
+                function print() {
+                    if (!currentQRData) {
+                        showMessage("error", "Generate QR Code terlebih dahulu");
+                        return;
+                    }
+
+                    const printWindow = window.open("", "", "height=600,width=800");
+                    const html = `
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>Cetak QR Artistik</title>
+                            <style>
+                                body { margin: 0; padding: 1cm; text-align: center; font-family: Arial; }
+                                img { max-width: 15cm; height: auto; margin: 2cm auto; display: block; }
+                                h2 { margin: 0; color: #333; }
+                                p { margin: 0.5cm 0; color: #666; font-size: 12px; }
+                                @media print { body { margin: 0; padding: 1cm; } }
+                            </style>
+                        </head>
+                        <body>
+                            <h2>✨ QR Code Artistik</h2>
+                            <p><strong>Bentuk:</strong> ${currentQRData.shape}</p>
+                            <p><strong>URL:</strong> ${currentQRData.text}</p>
+                            <img src="${canvas.toDataURL("image/png")}" />
+                            <p style="font-size: 10px; margin-top: 2cm;">
+                                Generated: ${new Date().toLocaleString()}<br>
+                                Style: ${currentQRData.fillStyle}
+                            </p>
+                        </body>
+                        </html>
+                    `;
+                    printWindow.document.write(html);
+                    printWindow.document.close();
+                    setTimeout(() => printWindow.print(), 250);
+                }
+
+                // Event Listeners
+                generateBtn.addEventListener("click", generateQR);
+                downloadPngBtn.addEventListener("click", downloadPNG);
+                printBtn.addEventListener("click", print);
+
+                // Auto-generate on load
+                window.addEventListener("load", () => {
+                    generateQR();
+                });
+            })();
+        </script>
+    </body>
+</html>
