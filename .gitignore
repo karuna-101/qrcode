@@ -1,0 +1,48 @@
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+
+# Node (jika digunakan di masa depan)
+node_modules/
+package-lock.json
+yarn.lock
+.npm
+
+# Build & Dist
+dist/
+build/
+*.min.js
+*.min.css
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Temp files
+temp/
+tmp/
+*.tmp
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS Specific
+.vscode-settings/
+*.orig
