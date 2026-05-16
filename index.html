@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=yes"
+        />
+        <title>QR Unik Personal - Garis & Bentuk</title>
+        <!-- Library QR Code Generator (diperlukan) -->
+        <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/dist/qrcode.min.js"></script>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                background: #f3ede7;
+                font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 1.5rem;
+            }
+            .card {
+                max-width: 1000px;
+                width: 100%;
+                background: white;
+                border-radius: 2.5rem;
+                box-shadow: 0 30px 50px rgba(0, 0, 0, 0.1);
+                display: flex;
+                flex-wrap: wrap;
+                overflow: hidden;
+            }
+            .panel {
+                padding: 2rem;
+            }
+            .left {
+                flex: 1 1 350px;
+                background: #fffefb;
+                border-right: 1px solid #f0e8dd;
+                display: flex;
+                flex-direction: column;
+                gap: 1.3rem;
+            }
+            .right {
+                flex: 1 1 450px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                background: #fefcf9;
+            }
+            h2 {
+                font-weight: 700;
+                font-size: 1.8rem;
+                color: #352e28;
+                margin-bottom: -0.2rem;
+            }
+            .subtitle {
+                color: #5c554d;
+                font-size: 0.9rem;
+                border-left: 3px solid #b38b6b;
+                padding-left: 1rem;
+            }
+            label {
+                font-weight: 600;
+                font-size: 0.85rem;
+                display: block;
+                margin-bottom: 0.25rem;
+                color: #3e3830;
+            }
+            textarea,
+            input,
+            select {
+                width: 100%;
+                padding: 0.7rem 0.9rem;
+                border: 1px solid #ddd2c4;
+                border-radius: 1rem;
+                font-family: inherit;
+                font-size: 0.9rem;
+                background: white;
+                transition: 0.2s;
+            }
+            textarea:focus,
+            input:focus,
+            select:focus {
+                outline: none;
+                border-color: #b39274;
+                box-shadow: 0 0 0 3px rgba(179, 146, 116, 0.2);
+            }
+            .row {
+                display: flex;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+            .col {
+                flex: 1;
+                min-width: 120px;
+            }
+            input[type="color"] {
+                height: 42px;
+                padding: 0.2rem;
+                cursor: pointer;
+            }
+            .checkbox {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.9rem;
+            }
+            button {
+                background: #2e2822;
+                border: none;
+                color: white;
+                font-weight: 600;
+                padding: 0.8rem 1.8rem;
+                border-radius: 2.5rem;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                transition: 0.2s;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            }
+            button:hover {
+                background: #1f1b17;
+            }
+            button.outline {
+                background: white;
+                color: #2e2822;
+                border: 1px solid #cfc3b5;
+                box-shadow: none;
+            }
+            .canvas-box {
+                background: white;
+                border-radius: 1.5rem;
+                padding: 1rem;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+                display: flex;
+                justify-content: center;
+                width: 100%;
+                max-width: 400px;
+            }
+            canvas {
+                display: block;
+                max-width: 100%;
+                height: auto;
+                image-rendering: crisp-edges;
+                border-radius: 1rem;
+            }
+            .info {
+                font-size: 0.8rem;
+                color: #776e64;
+                margin-top: 0.4rem;
+                text-align: center;
+                background: #f7f4ef;
+                padding: 0.4rem 1rem;
+                border-radius: 2rem;
+            }
+            hr {
+                border: 0.5px solid #e5dacf;
+                margin: 0.6rem 0;
+            }
+            @media (max-width: 700px) {
+                .card {
+                    flex-direction: column;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <!-- Panel Kiri: Kontrol -->
+            <div class="panel left">
+                <h2>🎨 QR Unik Personal</h2>
+                <div class="subtitle">
+                    Setiap modul jadi garis & bentuk khasmu
+                </div>
+
+                <div>
+                    <label>📝 Data (URL / teks)</label>
+                    <textarea
+                        id="qrText"
+                        rows="3"
+                        placeholder="https://contoh.com atau pesan..."
+                    >
+Halo, ini QR kreasiku!</textarea
+                    >
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label>✨ Gaya Modul</label>
+                        <select id="styleSelect">
+                            <option value="circles">Lingkaran</option>
+                            <option value="crosses">Garis Silang</option>
+                            <option value="triangles">Segitiga</option>
+                            <option value="dots">Titik-titik</option>
+                            <option value="waves">Gelombang</option>
+                            <option value="mixed" selected>Campur Unik</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label>🛡️ Koreksi Error</label>
+                        <select id="errorLevel">
+                            <option value="L">L (7%)</option>
+                            <option value="M">M (15%)</option>
+                            <option value="Q">Q (25%)</option>
+                            <option value="H" selected>
+                                H (30%) – disarankan
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label>🎯 Warna Modul</label>
+                        <input type="color" id="moduleColor" value="#1e1c1a" />
+                    </div>
+                    <div class="col">
+                        <label>🖼️ Warna Latar</label>
+                        <input type="color" id="bgColor" value="#ffffff" />
+                    </div>
+                </div>
+
+                <div>
+                    <label>📏 Skala modul (px)</label>
+                    <input
+                        type="range"
+                        id="scaleSlider"
+                        min="12"
+                        max="32"
+                        value="20"
+                        step="1"
+                    />
+                    <span
+                        id="scaleValue"
+                        style="font-weight: 600; margin-left: 0.5rem"
+                        >20</span
+                    >
+                    px
+                </div>
+
+                <div class="checkbox">
+                    <input type="checkbox" id="preserveFinder" checked />
+                    <label for="preserveFinder" style="margin: 0"
+                        >🔲 Pertahankan pola finder & timing standar</label
+                    >
+                </div>
+
+                <button id="generateBtn">
+                    <span>⚡</span> Generate QR Unik
+                </button>
+                <hr />
+                <p style="font-size: 0.75rem; color: #6b6258">
+                    💡 Gunakan error H agar modul non-standar tetap terbaca.
+                </p>
+            </div>
+
+            <!-- Panel Kanan: Preview & Unduh -->
+            <div class="panel right">
+                <div class="canvas-box">
+                    <canvas id="qrCanvas"></canvas>
+                </div>
+                <div style="margin-top: 1rem; display: flex; gap: 1rem">
+                    <button id="downloadBtn" class="outline">
+                        <span>⬇️</span> Unduh PNG
+                    </button>
+                </div>
+                <div class="info" id="infoNote">Siap membuat QR unik</div>
+            </div>
+        </div>
+
+        <script>
+            (function () {
+                // Cek apakah library QR sudah termuat
+                if (typeof qrcode === "undefined") {
+                    alert(
+                        "Library QR tidak termuat. Periksa koneksi internet & muat ulang halaman.",
+                    );
+                    document.getElementById("infoNote").textContent =
+                        "Gagal memuat library QR.";
+                    return;
+                }
+
+                // Elemen DOM
+                const qrText = document.getElementById("qrText");
+                const styleSelect = document.getElementById("styleSelect");
+                const errorLevelSelect = document.getElementById("errorLevel");
+                const moduleColorInput = document.getElementById("moduleColor");
+                const bgColorInput = document.getElementById("bgColor");
+                const scaleSlider = document.getElementById("scaleSlider");
+                const scaleValue = document.getElementById("scaleValue");
+                const preserveFinder =
+                    document.getElementById("preserveFinder");
+                const generateBtn = document.getElementById("generateBtn");
+                const downloadBtn = document.getElementById("downloadBtn");
+                const canvas = document.getElementById("qrCanvas");
+                const ctx = canvas.getContext("2d");
+                const infoNote = document.getElementById("infoNote");
+
+                let currentQR = null; // objek qr dari library
+
+                // Update label skala
+                scaleSlider.addEventListener("input", () => {
+                    scaleValue.textContent = scaleSlider.value;
+                });
+
+                // Fungsi bantu: apakah posisi termasuk area finder (3 sudut) atau separator
+                function isFinderArea(row, col, moduleCount) {
+                    if (row < 8 && col < 8) return true; // kiri-atas
+                    if (row < 8 && col >= moduleCount - 8) return true; // kanan-atas
+                    if (row >= moduleCount - 8 && col < 8) return true; // kiri-bawah
+                    return false;
+                }
+
+                function isTiming(row, col, moduleCount) {
+                    // Timing pattern: baris 6 dan kolom 6, di luar finder
+                    if (row === 6 || col === 6) {
+                        if (!isFinderArea(row, col, moduleCount)) return true;
+                    }
+                    return false;
+                }
+
+                // Gambar modul dengan gaya tertentu
+                function drawStyledModule(style, x, y, size, color) {
+                    ctx.fillStyle = color;
+                    ctx.strokeStyle = color;
+                    const half = size / 2;
+
+                    switch (style) {
+                        case "circles":
+                            ctx.beginPath();
+                            ctx.arc(
+                                x + half,
+                                y + half,
+                                size * 0.44,
+                                0,
+                                2 * Math.PI,
+                            );
+                            ctx.fill();
+                            break;
+                        case "crosses":
+                            ctx.lineWidth = size * 0.2;
+                            ctx.lineCap = "round";
+                            ctx.beginPath();
+                            ctx.moveTo(x + size * 0.2, y + size * 0.2);
+                            ctx.lineTo(x + size * 0.8, y + size * 0.8);
+                            ctx.stroke();
+                            ctx.beginPath();
+                            ctx.moveTo(x + size * 0.8, y + size * 0.2);
+                            ctx.lineTo(x + size * 0.2, y + size * 0.8);
+                            ctx.stroke();
+                            break;
+                        case "triangles": {
+                            const r = Math.floor(Math.random() * 4);
+                            ctx.beginPath();
+                            if (r === 0) {
+                                ctx.moveTo(x + half, y + size * 0.15);
+                                ctx.lineTo(x + size * 0.9, y + size * 0.85);
+                                ctx.lineTo(x + size * 0.1, y + size * 0.85);
+                            } else if (r === 1) {
+                                ctx.moveTo(x + half, y + size * 0.85);
+                                ctx.lineTo(x + size * 0.9, y + size * 0.15);
+                                ctx.lineTo(x + size * 0.1, y + size * 0.15);
+                            } else if (r === 2) {
+                                ctx.moveTo(x + size * 0.15, y + half);
+                                ctx.lineTo(x + size * 0.85, y + size * 0.1);
+                                ctx.lineTo(x + size * 0.85, y + size * 0.9);
+                            } else {
+                                ctx.moveTo(x + size * 0.85, y + half);
+                                ctx.lineTo(x + size * 0.15, y + size * 0.1);
+                                ctx.lineTo(x + size * 0.15, y + size * 0.9);
+                            }
+                            ctx.closePath();
+                            ctx.fill();
+                            break;
+                        }
+                        case "dots":
+                            for (let i = 0; i < 5; i++) {
+                                const dx =
+                                    x + size * (0.25 + Math.random() * 0.5);
+                                const dy =
+                                    y + size * (0.25 + Math.random() * 0.5);
+                                ctx.beginPath();
+                                ctx.arc(dx, dy, size * 0.08, 0, 2 * Math.PI);
+                                ctx.fill();
+                            }
+                            break;
+                        case "waves":
+                            ctx.lineWidth = size * 0.16;
+                            ctx.beginPath();
+                            ctx.moveTo(x + size * 0.1, y + half);
+                            ctx.quadraticCurveTo(
+                                x + half,
+                                y + half - size * 0.25,
+                                x + size * 0.9,
+                                y + half,
+                            );
+                            ctx.stroke();
+                            break;
+                        case "mixed":
+                        default:
+                            const mix = [
+                                "circles",
+                                "crosses",
+                                "triangles",
+                                "dots",
+                                "waves",
+                            ];
+                            const picked =
+                                mix[Math.floor(Math.random() * mix.length)];
+                            drawStyledModule(picked, x, y, size, color);
+                            break;
+                    }
+                }
+
+                // Fungsi utama generate QR
+                function generateQR() {
+                    const text = qrText.value.trim();
+                    if (!text) {
+                        alert("Masukkan teks atau URL terlebih dahulu.");
+                        return;
+                    }
+
+                    try {
+                        const errorLevel = errorLevelSelect.value;
+                        const qr = qrcode(0, errorLevel); // tipe otomatis
+                        qr.addData(text);
+                        qr.make();
+                        currentQR = qr;
+
+                        const moduleCount = qr.getModuleCount();
+                        const scale = parseInt(scaleSlider.value, 10);
+                        const canvasSize = moduleCount * scale;
+                        canvas.width = canvasSize;
+                        canvas.height = canvasSize;
+
+                        // Latar belakang
+                        ctx.fillStyle = bgColorInput.value;
+                        ctx.fillRect(0, 0, canvasSize, canvasSize);
+
+                        const moduleColor = moduleColorInput.value;
+                        const preserve = preserveFinder.checked;
+
+                        for (let row = 0; row < moduleCount; row++) {
+                            for (let col = 0; col < moduleCount; col++) {
+                                if (!qr.isDark(row, col)) continue;
+
+                                const x = col * scale;
+                                const y = row * scale;
+                                const s = scale;
+
+                                const inFinder = isFinderArea(
+                                    row,
+                                    col,
+                                    moduleCount,
+                                );
+                                const inTiming = isTiming(
+                                    row,
+                                    col,
+                                    moduleCount,
+                                );
+
+                                if (preserve && (inFinder || inTiming)) {
+                                    // modul standar kotak penuh
+                                    ctx.fillStyle = moduleColor;
+                                    ctx.fillRect(x, y, s, s);
+                                } else {
+                                    drawStyledModule(
+                                        styleSelect.value,
+                                        x,
+                                        y,
+                                        s,
+                                        moduleColor,
+                                    );
+                                }
+                            }
+                        }
+
+                        infoNote.textContent = `QR ${moduleCount}x${moduleCount} · Error ${errorLevel} · Gaya: ${styleSelect.value}`;
+                        if (!preserve)
+                            infoNote.textContent += " (non-standar, tes scan)";
+                    } catch (err) {
+                        alert("Gagal membuat QR: " + err.message);
+                        console.error(err);
+                    }
+                }
+
+                // Unduh PNG
+                function downloadQR() {
+                    if (!currentQR) {
+                        alert("Generate QR terlebih dahulu.");
+                        return;
+                    }
+                    canvas.toBlob((blob) => {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = "qr-unik-personal.png";
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, "image/png");
+                }
+
+                // Event listener
+                generateBtn.addEventListener("click", generateQR);
+                downloadBtn.addEventListener("click", downloadQR);
+
+                // Generate otomatis saat halaman siap
+                window.addEventListener("load", () => {
+                    // Cek ulang library
+                    if (typeof qrcode !== "undefined") {
+                        generateQR();
+                    } else {
+                        infoNote.textContent =
+                            "Library QR gagal dimuat. Coba muat ulang.";
+                    }
+                });
+            })();
+        </script>
+    </body>
+</html>
