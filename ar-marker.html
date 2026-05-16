@@ -31,10 +31,12 @@
                 box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                gap: 3rem;
-                padding: 2.5rem;
-                max-width: 1200px;
+                gap: 2rem;
+                padding: 1.5rem;
+                max-width: 1400px;
                 width: 100%;
+                height: calc(100vh - 3rem);
+                max-height: 90vh;
             }
 
             .panel {
@@ -45,13 +47,15 @@
 
             .left-panel {
                 border-right: 2px solid #f0f0f0;
-                padding-right: 2rem;
+                padding-right: 1.5rem;
+                overflow-y: auto;
+                max-height: calc(100vh - 6rem);
             }
 
             h1 {
-                font-size: 2rem;
+                font-size: 1.5rem;
                 color: #1a1a1a;
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.3rem;
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
@@ -60,18 +64,18 @@
 
             .subtitle {
                 color: #666;
-                font-size: 0.9rem;
-                margin-bottom: 1.5rem;
+                font-size: 0.8rem;
+                margin-bottom: 1rem;
                 border-left: 4px solid #667eea;
-                padding-left: 1rem;
+                padding-left: 0.8rem;
             }
 
             label {
                 font-weight: 700;
                 color: #1a1a1a;
-                font-size: 0.95rem;
+                font-size: 0.85rem;
                 display: block;
-                margin-bottom: 0.4rem;
+                margin-bottom: 0.3rem;
             }
 
             input[type="text"],
@@ -79,11 +83,11 @@
             textarea,
             select {
                 width: 100%;
-                padding: 0.9rem 1rem;
+                padding: 0.6rem 0.8rem;
                 border: 2px solid #e0e0e0;
-                border-radius: 0.8rem;
+                border-radius: 0.6rem;
                 font-family: inherit;
-                font-size: 0.95rem;
+                font-size: 0.85rem;
                 background: #fafafa;
                 transition: all 0.3s;
             }
@@ -100,7 +104,7 @@
 
             textarea {
                 resize: vertical;
-                min-height: 80px;
+                min-height: 60px;
                 font-size: 0.85rem;
             }
 
@@ -118,10 +122,10 @@
             .checkbox-group {
                 display: flex;
                 align-items: center;
-                gap: 0.8rem;
-                padding: 1rem;
+                gap: 0.6rem;
+                padding: 0.8rem;
                 background: #f8f9fa;
-                border-radius: 0.8rem;
+                border-radius: 0.6rem;
                 border: 1px solid #e9ecef;
             }
 
@@ -147,18 +151,18 @@
 
             button {
                 flex: 1;
-                min-width: 150px;
-                padding: 0.95rem 1.5rem;
+                min-width: 120px;
+                padding: 0.7rem 1.2rem;
                 border: none;
-                border-radius: 1rem;
+                border-radius: 0.8rem;
                 font-weight: 700;
-                font-size: 0.95rem;
+                font-size: 0.85rem;
                 cursor: pointer;
                 transition: all 0.3s;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                gap: 0.5rem;
+                gap: 0.4rem;
             }
 
             .btn-primary {
@@ -208,14 +212,14 @@
             .preview-box {
                 background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
                 border: 2px dashed #667eea;
-                border-radius: 1.5rem;
-                padding: 2rem;
+                border-radius: 1rem;
+                padding: 1rem;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
                 width: 100%;
-                min-height: 450px;
+                height: 100%;
                 position: relative;
             }
 
@@ -224,39 +228,46 @@
                 align-items: center;
                 justify-content: center;
                 background: white;
-                border-radius: 1rem;
-                padding: 1.5rem;
+                border-radius: 0.8rem;
+                padding: 1rem;
                 box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-                max-width: 100%;
+                width: 100%;
+                height: 100%;
                 overflow: auto;
             }
 
             canvas {
                 display: block;
                 max-width: 100%;
+                max-height: 100%;
                 height: auto;
+                width: auto;
                 image-rendering: crisp-edges;
             }
 
             #qrContainer {
-                max-width: 350px;
+                max-width: 100%;
+                max-height: 100%;
                 width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
             .preview-info {
-                margin-top: 1.5rem;
+                margin-top: 0.8rem;
                 text-align: center;
-                font-size: 0.85rem;
+                font-size: 0.75rem;
                 color: #666;
             }
 
             .info-badge {
                 display: inline-block;
                 background: #f0f0f0;
-                padding: 0.5rem 1rem;
+                padding: 0.35rem 0.8rem;
                 border-radius: 2rem;
-                margin: 0.3rem;
-                font-size: 0.8rem;
+                margin: 0.2rem;
+                font-size: 0.7rem;
                 color: #333;
             }
 
@@ -283,35 +294,46 @@
             @media (max-width: 1024px) {
                 .container {
                     grid-template-columns: 1fr;
-                    gap: 2rem;
+                    gap: 1rem;
+                    height: auto;
+                    max-height: none;
                 }
 
                 .left-panel {
                     border-right: none;
                     border-bottom: 2px solid #f0f0f0;
                     padding-right: 0;
-                    padding-bottom: 2rem;
+                    padding-bottom: 1.5rem;
+                    max-height: none;
+                }
+
+                .right-panel {
+                    min-height: 400px;
                 }
             }
 
             @media (max-width: 600px) {
                 h1 {
-                    font-size: 1.5rem;
+                    font-size: 1.2rem;
                 }
 
                 .container {
-                    padding: 1.5rem;
-                    gap: 1.5rem;
+                    padding: 1rem;
+                    gap: 1rem;
                 }
 
                 button {
-                    min-width: 120px;
-                    padding: 0.8rem 1.2rem;
-                    font-size: 0.85rem;
+                    min-width: 100px;
+                    padding: 0.6rem 1rem;
+                    font-size: 0.8rem;
                 }
 
                 .preview-box {
-                    min-height: 300px;
+                    min-height: 280px;
+                }
+
+                .left-panel {
+                    max-height: none;
                 }
             }
         </style>
@@ -415,12 +437,12 @@
                     </button>
                 </div>
 
-                <div style="margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 0.8rem; font-size: 0.8rem; color: #666; border-left: 4px solid #667eea;">
-                    <strong>💡 Tips Cetak:</strong><br>
-                    • Ukuran minimal 4cm x 4cm untuk pembacaan optimal<br>
-                    • Resolusi 300 DPI untuk hasil terbaik<br>
-                    • Kontras tinggi (hitam di putih atau sebaliknya)<br>
-                    • Solid style untuk scanning jarak jauh
+                <div style="margin-top: 0.8rem; padding: 0.8rem; background: #f8f9fa; border-radius: 0.6rem; font-size: 0.7rem; color: #666; border-left: 4px solid #667eea; line-height: 1.4;">
+                    <strong style="font-size: 0.75rem;">💡 Tips Cetak:</strong><br>
+                    • Min 4cm x 4cm<br>
+                    • 300 DPI untuk hasil terbaik<br>
+                    • Kontras tinggi (hitam/putih)<br>
+                    • Solid style untuk jarak jauh
                 </div>
             </div>
 
