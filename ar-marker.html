@@ -7,7 +7,7 @@
             content="width=device-width, initial-scale=1.0, user-scalable=yes"
         />
         <title>QR Code AR Marker - Tebal & Minim</title>
-        <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.0/build/qrcode.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
         <style>
             * {
                 margin: 0;
@@ -227,6 +227,8 @@
                 border-radius: 1rem;
                 padding: 1.5rem;
                 box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+                max-width: 100%;
+                overflow: auto;
             }
 
             canvas {
@@ -234,6 +236,11 @@
                 max-width: 100%;
                 height: auto;
                 image-rendering: crisp-edges;
+            }
+
+            #qrContainer {
+                max-width: 350px;
+                width: 100%;
             }
 
             .preview-info {
@@ -251,51 +258,6 @@
                 margin: 0.3rem;
                 font-size: 0.8rem;
                 color: #333;
-            }
-
-            .modal {
-                display: none;
-                position: fixed;
-                z-index: 1000;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-            }
-
-            .modal-content {
-                background: white;
-                margin: 5% auto;
-                padding: 2rem;
-                border-radius: 1.5rem;
-                width: 90%;
-                max-width: 500px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            }
-
-            .modal h2 {
-                margin-bottom: 1rem;
-                color: #1a1a1a;
-            }
-
-            .modal-input {
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .close {
-                color: #aaa;
-                float: right;
-                font-size: 2rem;
-                font-weight: bold;
-                cursor: pointer;
-            }
-
-            .close:hover {
-                color: #000;
             }
 
             .success-message {
@@ -400,52 +362,39 @@
                     <div class="input-group">
                         <div>
                             <label style="font-size: 0.85rem; margin-bottom: 0.3rem"
-                                >Error Correction</label
+                                >Ukuran Module</label
                             >
-                            <select id="errorLevel">
-                                <option value="L">L (7%)</option>
-                                <option value="M">M (15%)</option>
-                                <option value="Q">Q (25%)</option>
-                                <option value="H" selected>H (30%)</option>
+                            <select id="moduleSize">
+                                <option value="4">4px (Kecil)</option>
+                                <option value="6">6px</option>
+                                <option value="8" selected>8px (Rekomendasi)</option>
+                                <option value="10">10px</option>
+                                <option value="12">12px (Besar)</option>
                             </select>
                         </div>
                         <div>
                             <label style="font-size: 0.85rem; margin-bottom: 0.3rem"
-                                >Ukuran Module</label
+                                >Gaya Marker</label
                             >
-                            <select id="moduleSize">
-                                <option value="8">8px (Kecil)</option>
-                                <option value="10">10px</option>
-                                <option value="12" selected>12px (Rekomendasi)</option>
-                                <option value="14">14px</option>
-                                <option value="16">16px (Besar)</option>
+                            <select id="markerStyle">
+                                <option value="solid" selected>Solid (Tebal)</option>
+                                <option value="outline">Garis</option>
+                                <option value="circle">Lingkaran</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <!-- Marker Style -->
-                <div>
-                    <label>🎨 Gaya Marker</label>
-                    <select id="markerStyle">
-                        <option value="solid" selected>Solid (Tebal Penuh)</option>
-                        <option value="thick-outline">Garis Tebal</option>
-                        <option value="minimal">Minimal (Garis Tipis)</option>
-                        <option value="square">Kotak Tebal</option>
-                    </select>
-                </div>
-
-                <!-- Print Settings -->
-                <div class="checkbox-group">
-                    <input type="checkbox" id="printOptimized" checked />
-                    <label for="printOptimized"
-                        >🖨️ Optimasi untuk cetak berkualitas tinggi</label
-                    >
-                </div>
-
-                <div class="checkbox-group">
-                    <input type="checkbox" id="addBorder" />
-                    <label for="addBorder">➕ Tambah border putih di sekeliling</label>
+                <!-- Warna Settings -->
+                <div class="input-group">
+                    <div>
+                        <label>🎨 Warna Modul</label>
+                        <input type="color" id="moduleColor" value="#000000" />
+                    </div>
+                    <div>
+                        <label>🖼️ Warna Background</label>
+                        <input type="color" id="bgColor" value="#ffffff" />
+                    </div>
                 </div>
 
                 <div class="divider"></div>
@@ -455,23 +404,11 @@
                     <button class="btn-primary" id="generateBtn">
                         <span>⚡</span> Generate QR
                     </button>
-                    <button class="btn-secondary" id="settingsBtn">
-                        <span>⚙️</span> Pengaturan
-                    </button>
                 </div>
 
                 <div class="button-group">
                     <button class="btn-tertiary" id="downloadPngBtn">
                         <span>🖼️</span> Unduh PNG
-                    </button>
-                    <button class="btn-tertiary" id="downloadSvgBtn">
-                        <span>📐</span> Unduh SVG
-                    </button>
-                </div>
-
-                <div class="button-group">
-                    <button class="btn-tertiary" id="copyBtn">
-                        <span>📋</span> Salin JSON
                     </button>
                     <button class="btn-tertiary" id="printBtn">
                         <span>🖨️</span> Cetak
@@ -483,7 +420,7 @@
                     • Ukuran minimal 4cm x 4cm untuk pembacaan optimal<br>
                     • Resolusi 300 DPI untuk hasil terbaik<br>
                     • Kontras tinggi (hitam di putih atau sebaliknya)<br>
-                    • Error correction H untuk toleransi cetak
+                    • Solid style untuk scanning jarak jauh
                 </div>
             </div>
 
@@ -491,78 +428,33 @@
             <div class="panel right-panel">
                 <div class="preview-box">
                     <div class="canvas-wrapper">
-                        <canvas id="qrCanvas" width="400" height="400"></canvas>
+                        <div id="qrContainer"></div>
                     </div>
                 </div>
                 <div class="preview-info" id="previewInfo">
-                    Silakan generate QR Code terlebih dahulu
+                    Silakan klik "Generate QR" untuk membuat QR Code
                 </div>
-            </div>
-        </div>
-
-        <!-- Settings Modal -->
-        <div id="settingsModal" class="modal">
-            <div class="modal-content">
-                <span class="close" id="closeSettings">&times;</span>
-                <h2>⚙️ Pengaturan Lanjutan</h2>
-
-                <div class="modal-input">
-                    <div>
-                        <label>Warna Module</label>
-                        <input type="color" id="moduleColor" value="#000000" />
-                    </div>
-                    <div>
-                        <label>Warna Background</label>
-                        <input type="color" id="bgColor" value="#ffffff" />
-                    </div>
-                    <div>
-                        <label>Margin (pixel)</label>
-                        <input type="number" id="margin" value="4" min="0" max="20" />
-                    </div>
-                </div>
-
-                <button class="btn-primary" id="applySettingsBtn" style="width: 100%">
-                    Terapkan
-                </button>
             </div>
         </div>
 
         <script>
             (function () {
-                // Check library
-                if (typeof QRCode === "undefined") {
-                    alert("QR Library tidak termuat. Muat ulang halaman.");
-                    return;
-                }
-
                 // DOM Elements
                 const webLinkInput = document.getElementById("webLink");
                 const arMarkerIDInput = document.getElementById("arMarkerID");
-                const errorLevelSelect = document.getElementById("errorLevel");
                 const moduleSizeSelect = document.getElementById("moduleSize");
                 const markerStyleSelect = document.getElementById("markerStyle");
-                const printOptimized = document.getElementById("printOptimized");
-                const addBorder = document.getElementById("addBorder");
+                const moduleColorInput = document.getElementById("moduleColor");
+                const bgColorInput = document.getElementById("bgColor");
                 const generateBtn = document.getElementById("generateBtn");
                 const downloadPngBtn = document.getElementById("downloadPngBtn");
-                const downloadSvgBtn = document.getElementById("downloadSvgBtn");
-                const copyBtn = document.getElementById("copyBtn");
                 const printBtn = document.getElementById("printBtn");
-                const settingsBtn = document.getElementById("settingsBtn");
-                const canvas = document.getElementById("qrCanvas");
-                const ctx = canvas.getContext("2d");
+                const qrContainer = document.getElementById("qrContainer");
                 const previewInfo = document.getElementById("previewInfo");
                 const successMsg = document.getElementById("successMsg");
                 const errorMsg = document.getElementById("errorMsg");
 
-                // Settings
-                const moduleColorInput = document.getElementById("moduleColor");
-                const bgColorInput = document.getElementById("bgColor");
-                const marginInput = document.getElementById("margin");
-                const settingsModal = document.getElementById("settingsModal");
-                const closeSettings = document.getElementById("closeSettings");
-                const applySettingsBtn = document.getElementById("applySettingsBtn");
-
+                let currentQR = null;
                 let currentQRData = null;
 
                 // Show message
@@ -575,154 +467,61 @@
                     }, 4000);
                 }
 
-                // Encode QR with metadata
-                function encodeQRData() {
+                // Generate QR Code
+                function generateQR() {
                     const webLink = webLinkInput.value.trim();
                     const arID = arMarkerIDInput.value.trim();
 
                     if (!webLink) {
                         showMessage("error", "URL tidak boleh kosong");
-                        return null;
+                        return;
                     }
-
-                    // Encode both web link and AR marker ID in QR
-                    // Format: URL|AR_ID for dual functionality
-                    const qrText = arID ? `${webLink}|${arID}` : webLink;
-                    return qrText;
-                }
-
-                // Draw styled QR module
-                function drawStyledModule(style, x, y, size, isDark, color) {
-                    if (!isDark) return;
-
-                    ctx.fillStyle = color;
-                    const padding = size * 0.15;
-
-                    switch (style) {
-                        case "solid":
-                            // Tebal penuh
-                            ctx.fillRect(x, y, size, size);
-                            break;
-                        case "thick-outline":
-                            // Garis tebal
-                            ctx.lineWidth = size * 0.3;
-                            ctx.strokeRect(x + padding, y + padding, size - padding * 2, size - padding * 2);
-                            break;
-                        case "minimal":
-                            // Garis tipis
-                            ctx.lineWidth = size * 0.15;
-                            ctx.strokeRect(x + padding, y + padding, size - padding * 2, size - padding * 2);
-                            break;
-                        case "square":
-                            // Kotak tebal dengan rounded corner
-                            const radius = size * 0.2;
-                            ctx.beginPath();
-                            ctx.moveTo(x + radius, y);
-                            ctx.lineTo(x + size - radius, y);
-                            ctx.quadraticCurveTo(x + size, y, x + size, y + radius);
-                            ctx.lineTo(x + size, y + size - radius);
-                            ctx.quadraticCurveTo(x + size, y + size, x + size - radius, y + size);
-                            ctx.lineTo(x + radius, y + size);
-                            ctx.quadraticCurveTo(x, y + size, x, y + size - radius);
-                            ctx.lineTo(x, y + radius);
-                            ctx.quadraticCurveTo(x, y, x + radius, y);
-                            ctx.fill();
-                            break;
-                    }
-                }
-
-                // Generate QR Code
-                function generateQR() {
-                    const qrText = encodeQRData();
-                    if (!qrText) return;
 
                     try {
-                        const errorLevel = errorLevelSelect.value;
+                        // Encode text
+                        const qrText = arID ? `${webLink}|${arID}` : webLink;
                         const moduleSize = parseInt(moduleSizeSelect.value);
                         const markerStyle = markerStyleSelect.value;
                         const moduleColor = moduleColorInput.value;
                         const bgColor = bgColorInput.value;
-                        const margin = parseInt(marginInput.value);
 
-                        // Generate with library
-                        const qr = new QRCode({
+                        // Clear previous QR
+                        qrContainer.innerHTML = "";
+
+                        // Generate QR with QRCode.js library
+                        currentQR = new QRCode(qrContainer, {
                             text: qrText,
-                            width: 500,
-                            height: 500,
-                            correctLevel: QRCode.CorrectLevel[errorLevel],
-                            useSVG: false
+                            width: moduleSize * 100,
+                            height: moduleSize * 100,
+                            colorDark: moduleColor,
+                            colorLight: bgColor,
+                            correctLevel: QRCode.CorrectLevel.H
                         });
 
-                        // Extract QR data
-                        const qrCanvas = qr.canvas;
-                        const qrCtx = qrCanvas.getContext("2d");
-                        const imgData = qrCtx.getImageData(0, 0, 500, 500);
-                        const data = imgData.data;
-
-                        const modules = [];
-                        for (let i = 0; i < 500; i++) {
-                            modules[i] = [];
-                            for (let j = 0; j < 500; j++) {
-                                const idx = (i * 500 + j) * 4;
-                                const isDark = (data[idx] + data[idx + 1] + data[idx + 2]) < 384;
-                                modules[i][j] = isDark;
-                            }
-                        }
-
-                        const moduleCount = 500;
-                        const totalSize = moduleSize * moduleCount + margin * 2;
-                        canvas.width = totalSize;
-                        canvas.height = totalSize;
-
-                        // Background
-                        ctx.fillStyle = bgColor;
-                        ctx.fillRect(0, 0, totalSize, totalSize);
-
-                        // Draw modules
-                        for (let row = 0; row < moduleCount; row++) {
-                            for (let col = 0; col < moduleCount; col++) {
-                                const x = col * moduleSize + margin;
-                                const y = row * moduleSize + margin;
-                                drawStyledModule(
-                                    markerStyle,
-                                    x,
-                                    y,
-                                    moduleSize,
-                                    modules[row][col],
-                                    moduleColor
-                                );
-                            }
-                        }
-
-                        // Add white border if enabled
-                        if (addBorder.checked) {
-                            const borderSize = moduleSize * 4;
-                            ctx.strokeStyle = moduleColor;
-                            ctx.lineWidth = 3;
-                            ctx.strokeRect(
-                                margin + borderSize,
-                                margin + borderSize,
-                                totalSize - margin * 2 - borderSize * 2,
-                                totalSize - margin * 2 - borderSize * 2
-                            );
+                        // Get canvas and apply styling if needed
+                        const canvas = qrContainer.querySelector("canvas");
+                        if (canvas) {
+                            // Improve styling
+                            canvas.style.maxWidth = "100%";
+                            canvas.style.height = "auto";
+                            canvas.style.imageRendering = "crisp-edges";
                         }
 
                         currentQRData = {
                             text: qrText,
-                            webLink: webLinkInput.value,
-                            arID: arMarkerIDInput.value,
-                            errorLevel,
-                            moduleSize,
+                            webLink: webLink,
+                            arID: arID,
+                            moduleSize: moduleSize,
                             style: markerStyle,
-                            moduleColor,
-                            bgColor
+                            moduleColor: moduleColor,
+                            bgColor: bgColor
                         };
 
                         previewInfo.innerHTML = `
                             <div>
-                                <span class="info-badge">Size: ${moduleCount}x${moduleCount}</span>
-                                <span class="info-badge">Error: ${errorLevel}</span>
+                                <span class="info-badge">Size: ${moduleSize}px</span>
                                 <span class="info-badge">Style: ${markerStyle}</span>
+                                <span class="info-badge">Kontras: Tinggi</span>
                             </div>
                             <div style="margin-top: 0.5rem; font-size: 0.75rem">
                                 ✅ QR Code siap untuk cetak & AR scanning
@@ -738,8 +537,14 @@
 
                 // Download PNG
                 function downloadPNG() {
-                    if (!currentQRData) {
+                    if (!currentQR) {
                         showMessage("error", "Generate QR Code terlebih dahulu");
+                        return;
+                    }
+
+                    const canvas = qrContainer.querySelector("canvas");
+                    if (!canvas) {
+                        showMessage("error", "Canvas tidak ditemukan");
                         return;
                     }
 
@@ -752,58 +557,20 @@
                         a.click();
                         document.body.removeChild(a);
                         URL.revokeObjectURL(url);
-                    }, "image/png");
-                }
-
-                // Download SVG (Vector)
-                function downloadSVG() {
-                    if (!currentQRData) {
-                        showMessage("error", "Generate QR Code terlebih dahulu");
-                        return;
-                    }
-
-                    const qrText = currentQRData.text;
-                    const errorLevel = currentQRData.errorLevel;
-
-                    const qr = new QRCode({
-                        text: qrText,
-                        width: 500,
-                        height: 500,
-                        correctLevel: QRCode.CorrectLevel[errorLevel],
-                        useSVG: true
-                    });
-
-                    const svgElement = qr.canvas;
-                    const svgString = new XMLSerializer().serializeToString(svgElement);
-
-                    const blob = new Blob([svgString], { type: "image/svg+xml" });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = `qr-ar-marker-${new Date().getTime()}.svg`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }
-
-                // Copy JSON metadata
-                function copyJSON() {
-                    if (!currentQRData) {
-                        showMessage("error", "Generate QR Code terlebih dahulu");
-                        return;
-                    }
-
-                    const json = JSON.stringify(currentQRData, null, 2);
-                    navigator.clipboard.writeText(json).then(() => {
-                        showMessage("success", "JSON metadata disalin ke clipboard!");
-                    });
+                        showMessage("success", "QR Code berhasil diunduh!");
+                    }, "image/png", 1.0);
                 }
 
                 // Print
                 function print() {
-                    if (!currentQRData) {
+                    if (!currentQR) {
                         showMessage("error", "Generate QR Code terlebih dahulu");
+                        return;
+                    }
+
+                    const canvas = qrContainer.querySelector("canvas");
+                    if (!canvas) {
+                        showMessage("error", "Canvas tidak ditemukan");
                         return;
                     }
 
@@ -815,11 +582,11 @@
                             <title>Cetak QR Code AR Marker</title>
                             <style>
                                 body { margin: 0; padding: 1cm; text-align: center; font-family: Arial; }
-                                img { max-width: 15cm; height: auto; margin: 2cm 0; }
+                                img { max-width: 15cm; height: auto; margin: 2cm 0; display: block; margin-left: auto; margin-right: auto; }
                                 h2 { margin: 0; color: #333; }
                                 p { margin: 0.5cm 0; color: #666; font-size: 12px; }
                                 @media print {
-                                    body { margin: 0; padding: 0; }
+                                    body { margin: 0; padding: 1cm; }
                                     img { max-width: 100%; }
                                 }
                             </style>
@@ -831,42 +598,22 @@
                             <img src="${canvas.toDataURL("image/png")}" />
                             <p style="font-size: 10px; margin-top: 2cm;">
                                 Generated: ${new Date().toLocaleString()}<br>
-                                Error Level: ${currentQRData.errorLevel}<br>
-                                Size: ${currentQRData.moduleSize}px per module
+                                Module Size: ${currentQRData.moduleSize}px<br>
+                                Style: ${currentQRData.style}
                             </p>
                         </body>
                         </html>
                     `;
                     printWindow.document.write(html);
                     printWindow.document.close();
-                    printWindow.print();
+                    setTimeout(() => {
+                        printWindow.print();
+                    }, 250);
                 }
-
-                // Settings Modal
-                settingsBtn.addEventListener("click", () => {
-                    settingsModal.style.display = "block";
-                });
-
-                closeSettings.addEventListener("click", () => {
-                    settingsModal.style.display = "none";
-                });
-
-                applySettingsBtn.addEventListener("click", () => {
-                    settingsModal.style.display = "none";
-                    generateQR();
-                });
-
-                window.addEventListener("click", (event) => {
-                    if (event.target === settingsModal) {
-                        settingsModal.style.display = "none";
-                    }
-                });
 
                 // Event Listeners
                 generateBtn.addEventListener("click", generateQR);
                 downloadPngBtn.addEventListener("click", downloadPNG);
-                downloadSvgBtn.addEventListener("click", downloadSVG);
-                copyBtn.addEventListener("click", copyJSON);
                 printBtn.addEventListener("click", print);
 
                 // Auto-generate on load
